@@ -1,18 +1,34 @@
+/*
+Copyright 2017 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package vpa
 
 import (
-	"testing"
-	"net/http"
-	"io/ioutil"
-	"net"
 	"io"
+	"io/ioutil"
 	"k8s.io/kubernetes/staging/src/k8s.io/apimachinery/pkg/util/json"
+	"net"
+	"net/http"
 	"reflect"
+	"testing"
 )
 
-const(
-	protocol = "http://"
-	fakeAddress = "localhost:8989"
+const (
+	protocol        = "http://"
+	fakeAddress     = "localhost:8989"
 	fakeHandlerName = "/echo"
 )
 
@@ -26,21 +42,22 @@ func spinOffFakeRecommenderServer() (io.Closer, error) {
 
 	server := &http.Server{Addr: fakeAddress, Handler: mux}
 	listener, err := net.Listen("tcp", fakeAddress) //created manually, to be able to close server later
-	if err != nil { return nil, err }
+	if err != nil {
+		return nil, err
+	}
 
 	go server.Serve(listener)
 
-	return listener, nil;
+	return listener, nil
 }
 
-func createFakeRecommenderClient() *RecommenderClient {
-	client:= CreateRecommenderClient(protocol + fakeAddress + fakeHandlerName);
-	return client;
+func createFakeRecommenderClient() *JSONClient {
+	client := CreateRecommenderClient(protocol + fakeAddress + fakeHandlerName)
+	return client
 }
 
-
-func TestSendJSON (t *testing.T) {
-	closer, err:= spinOffFakeRecommenderServer()
+func TestSendJSON(t *testing.T) {
+	closer, err := spinOffFakeRecommenderServer()
 	if err != nil {
 		t.Fatalf("Unable to create server %s", err.Error())
 	}
@@ -52,10 +69,10 @@ func TestSendJSON (t *testing.T) {
 		Time int64
 	}
 
-	obj:= SampleObject{"Alice", "Hello", 1294706395881547000}
-	client:= createFakeRecommenderClient()
+	obj := SampleObject{"Alice", "Hello", 1294706395881547000}
+	client := createFakeRecommenderClient()
 
-	response, err:= client.SendJSON(obj)
+	response, err := client.SendJSON(obj)
 	if err != nil {
 		t.Fatalf("Unable to send JSON: %s", err.Error())
 	}
@@ -70,20 +87,20 @@ func TestSendJSON (t *testing.T) {
 	}
 }
 
-func TestSendData (t *testing.T) {
-	closer, err:= spinOffFakeRecommenderServer()
+func TestSendData(t *testing.T) {
+	closer, err := spinOffFakeRecommenderServer()
 	if err != nil {
 		t.Fatalf("Unable to create server %s", err.Error())
 	}
 	defer closer.Close()
 
-	const requestBody  = "fake request body";
-	requestData:= []byte(requestBody)
+	const requestBody = "fake request body"
+	requestData := []byte(requestBody)
 
-	client:= createFakeRecommenderClient();
-	resp,err:= client.sendData(requestData, "plain/text");
+	client := createFakeRecommenderClient()
+	resp, err := client.sendData(requestData, "plain/text")
 
-	if err !=nil {
+	if err != nil {
 		t.Fatalf("Unable to process rqquest %s", err.Error())
 	}
 

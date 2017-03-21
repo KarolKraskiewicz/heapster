@@ -1,0 +1,62 @@
+/*
+Copyright 2017 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package vpa
+
+import (
+	"bytes"
+	"io/ioutil"
+	"k8s.io/kubernetes/staging/src/k8s.io/apimachinery/pkg/util/json"
+	"net/http"
+)
+
+type JSONClient struct {
+	url string
+}
+
+func CreateRecommenderClient(url string) *JSONClient {
+	return &JSONClient{url: url}
+}
+
+func (c *JSONClient) SendJSON(object interface{}) ([]byte, error) {
+	data, err := json.Marshal(object)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := c.sendData(data, "application/json")
+	if err != nil {
+		return nil, err
+	}
+
+	return response, nil
+}
+
+func (c *JSONClient) sendData(data []byte, dataType string) ([]byte, error) {
+	resp, err := http.Post(c.url, dataType, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
