@@ -51,7 +51,12 @@ func spinOffFakeRecommenderServer() (io.Closer, error) {
 	return listener, nil
 }
 
-func createFakeRecommenderClient() *JSONClient {
+func createFakeHTTPRecommenderClient() *httpJSONClient {
+	client := &httpJSONClient{url: protocol + fakeAddress + fakeHandlerName}
+	return client
+}
+
+func createFakeRecommenderClient() JSONClient {
 	client := CreateRecommenderClient(protocol + fakeAddress + fakeHandlerName)
 	return client
 }
@@ -97,7 +102,7 @@ func TestSendData(t *testing.T) {
 	const requestBody = "fake request body"
 	requestData := []byte(requestBody)
 
-	client := createFakeRecommenderClient()
+	client := createFakeHTTPRecommenderClient()
 	resp, err := client.sendData(requestData, "plain/text")
 
 	if err != nil {

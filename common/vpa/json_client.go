@@ -23,15 +23,19 @@ import (
 	"net/http"
 )
 
-type JSONClient struct {
+type httpJSONClient struct {
 	url string
 }
 
-func CreateRecommenderClient(url string) *JSONClient {
-	return &JSONClient{url: url}
+type JSONClient interface {
+	SendJSON(object interface{}) ([]byte, error)
 }
 
-func (c *JSONClient) SendJSON(object interface{}) ([]byte, error) {
+func CreateRecommenderClient(url string) JSONClient {
+	return &httpJSONClient{url: url}
+}
+
+func (c *httpJSONClient) SendJSON(object interface{}) ([]byte, error) {
 	data, err := json.Marshal(object)
 	if err != nil {
 		return nil, err
@@ -45,7 +49,7 @@ func (c *JSONClient) SendJSON(object interface{}) ([]byte, error) {
 	return response, nil
 }
 
-func (c *JSONClient) sendData(data []byte, dataType string) ([]byte, error) {
+func (c *httpJSONClient) sendData(data []byte, dataType string) ([]byte, error) {
 	resp, err := http.Post(c.url, dataType, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
