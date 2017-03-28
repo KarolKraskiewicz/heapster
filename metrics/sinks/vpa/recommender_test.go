@@ -17,7 +17,6 @@ limitations under the License.
 package vpa
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/heapster/metrics/core"
 	"reflect"
@@ -31,7 +30,6 @@ type fakeJSONClient struct {
 
 func (client *fakeJSONClient) SendJSON(object interface{}) ([]byte, error) {
 	client.objectsSent = append(client.objectsSent, object)
-	fmt.Println(object)
 	return []byte{}, nil
 }
 

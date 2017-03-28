@@ -28,9 +28,17 @@ type containerUtilizationSnapshot struct {
 	containerName  string
 	containerImage string
 	podId          string
+	// Amount of requested memory.
+	// Units: Bytes.
 	memoryRequest  int64
+	// Current, total memory usage
+	// Units: Bytes.
 	memoryUsage    int64
-	cpuRequested   int64
+	// Guaranteed amount of CPU
+	// Units: Millicores.
+	cpuRequest     int64
+	// Avg CPU usage since last scrap time
+	// Units: Millicores.
 	cpuUsageRate   int64
 }
 
@@ -48,7 +56,7 @@ func newContainerUtilizationSnapshot(metricSet *core.MetricSet) (*containerUtili
 		podId:          metricSet.Labels[core.LabelPodId.Key],
 		memoryRequest:  metricSet.MetricValues[core.MetricMemoryRequest.Name].IntValue,
 		memoryUsage:    metricSet.MetricValues[core.MetricMemoryUsage.Name].IntValue,
-		cpuRequested:   metricSet.MetricValues[core.MetricCpuRequest.Name].IntValue,
+		cpuRequest:	metricSet.MetricValues[core.MetricCpuRequest.Name].IntValue,
 		cpuUsageRate:   metricSet.MetricValues[core.MetricCpuUsageRate.Name].IntValue,
 	}
 	return &snapshot, nil

@@ -48,7 +48,7 @@ func (sink *recommenderSink) ExportData(dataBatch *core.DataBatch) {
 		if err == nil {
 			_, err := sink.recommenderClient.SendJSON(utilizationSnapshot)
 			if err != nil {
-				glog.Errorf("Unable to sent utilization snapshot to VPA recommender, due to error: %s", err)
+				glog.Errorf("Unable to send utilization snapshot to VPA recommender, due to error: %s", err)
 			}
 		} else {
 			glog.Warningf("Unable to create utilization snapshot, due to error: %s", err.Error())
@@ -65,9 +65,5 @@ func (sink *recommenderSink) Stop() {
 }
 
 func isContainerMetricSet(metricSet *core.MetricSet) bool {
-	if metricSet.Labels[core.LabelContainerName.Key] != "" && metricSet.Labels[core.LabelContainerBaseImage.Key] != "" {
-		return true
-	} else {
-		return false
-	}
+	return metricSet.Labels[core.LabelContainerName.Key] != "" && metricSet.Labels[core.LabelContainerBaseImage.Key] != ""
 }
