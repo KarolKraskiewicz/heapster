@@ -29,11 +29,11 @@ type recommenderSink struct {
 	sync.RWMutex
 }
 
-func CreateRecommenderSink(uri *url.URL) core.DataSink {
+func CreateRecommenderSink(uri *url.URL) (core.DataSink, error) {
 	jsonClient := vpa.CreateRecommenderClient(uri.RequestURI())
 	recommenderSink := recommenderSink{recommenderClient: jsonClient}
 
-	return &recommenderSink
+	return &recommenderSink, nil
 }
 
 func (sink *recommenderSink) ExportData(dataBatch *core.DataBatch) {
