@@ -17,9 +17,9 @@ limitations under the License.
 package vpa
 
 import (
+	"encoding/json"
 	"io"
 	"io/ioutil"
-	"k8s.io/kubernetes/staging/src/k8s.io/apimachinery/pkg/util/json"
 	"net"
 	"net/http"
 	"reflect"

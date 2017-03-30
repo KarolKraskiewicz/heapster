@@ -18,8 +18,8 @@ package vpa
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
-	"k8s.io/kubernetes/staging/src/k8s.io/apimachinery/pkg/util/json"
 	"net/http"
 )
 
