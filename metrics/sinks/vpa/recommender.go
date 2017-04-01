@@ -30,7 +30,7 @@ type recommenderSink struct {
 }
 
 func CreateRecommenderSink(uri *url.URL) (core.DataSink, error) {
-	jsonClient := vpa.CreateRecommenderClient(uri.RequestURI())
+	jsonClient := vpa.CreateRecommenderClient(uri.String())
 	recommenderSink := recommenderSink{recommenderClient: jsonClient}
 
 	return &recommenderSink, nil
