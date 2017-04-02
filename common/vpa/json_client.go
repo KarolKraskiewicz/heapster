@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"github.com/golang/glog"
 )
 
 type httpJSONClient struct {
@@ -40,7 +41,7 @@ func (c *httpJSONClient) SendJSON(object interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	glog.Infof("Marshaled object ready to be sent: %s", data)
 	response, err := c.sendData(data, "application/json")
 	if err != nil {
 		return nil, err

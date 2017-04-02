@@ -22,6 +22,7 @@ import (
 	"k8s.io/heapster/metrics/core"
 	"net/url"
 	"sync"
+	"fmt"
 )
 
 type recommenderSink struct {
@@ -44,8 +45,10 @@ func (sink *recommenderSink) ExportData(dataBatch *core.DataBatch) {
 		if !isContainerMetricSet(metricSet) {
 			continue //skip for non-container metrics
 		}
+		glog.Infof("Container metric set found: %+v", metricSet)
 		utilizationSnapshot, err := newContainerUtilizationSnapshot(metricSet)
 		if err == nil {
+			glog.Infof("UtilizationShapshot created: %+v", utilizationSnapshot)
 			_, err := sink.recommenderClient.SendJSON(utilizationSnapshot)
 			if err != nil {
 				glog.Errorf("Unable to send utilization snapshot to VPA recommender, due to error: %s", err)
