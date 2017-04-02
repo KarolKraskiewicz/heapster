@@ -130,8 +130,15 @@ func TestExportData(t *testing.T) {
 
 	sink.ExportData(&batch)
 
-	assert.Equal(t, 3, len(jsonClient.objectsSent))
-	assert.Equal(t, reflect.TypeOf((*containerUtilizationSnapshot)(nil)).Elem(), reflect.TypeOf(jsonClient.objectsSent[0]).Elem(), "Objects sent should be of 'containerUtilizationSnapshot' type")
+	assert.Equal(t, 1, len(jsonClient.objectsSent))
+
+	actualObjectType:= reflect.TypeOf((*utilizationSnapshotSet)(nil)).Elem()
+	sentObjectType:= reflect.TypeOf(jsonClient.objectsSent[0]).Elem()
+
+	assert.Equal(t, actualObjectType, sentObjectType, "Objects sent should be of 'containerUtilizationSnapshot' type")
+
+	set:= jsonClient.objectsSent[0].(*utilizationSnapshotSet)
+	assert.Equal(t, 3, len(set.Containers))
 }
 
 const (

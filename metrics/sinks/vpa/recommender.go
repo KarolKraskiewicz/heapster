@@ -40,18 +40,27 @@ func (sink *recommenderSink) ExportData(dataBatch *core.DataBatch) {
 	sink.Lock()
 	defer sink.Unlock()
 
+	snapshotSet:= utilizationSnapshotSet{}
 	for _, metricSet := range dataBatch.MetricSets {
 		if !isContainerMetricSet(metricSet) {
 			continue //skip for non-container metrics
 		}
 		utilizationSnapshot, err := newContainerUtilizationSnapshot(metricSet)
 		if err == nil {
-			_, err := sink.recommenderClient.SendJSON(utilizationSnapshot)
-			if err != nil {
-				glog.Errorf("Unable to send utilization snapshot to VPA recommender, due to error: %s", err)
-			}
+			snapshotSet.addContainer(utilizationSnapshot)
 		} else {
 			glog.Warningf("Unable to create utilization snapshot, due to error: %s", err.Error())
+		}
+	}
+
+	sink.sendAllSnapshots(&snapshotSet)
+}
+
+func (sink *recommenderSink) sendAllSnapshots(set *utilizationSnapshotSet) {
+	if len(set.Containers) > 0 {
+		_, err := sink.recommenderClient.SendJSON(set)
+		if err != nil {
+			glog.Errorf("Unable to send utilization snapshot to VPA recommender, due to error: %s", err)
 		}
 	}
 }

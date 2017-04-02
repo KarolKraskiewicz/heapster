@@ -22,6 +22,14 @@ import (
 	"time"
 )
 
+type utilizationSnapshotSet struct {
+	Containers	[]*containerUtilizationSnapshot `json:"containers"`
+}
+
+func (set *utilizationSnapshotSet) addContainer(utilizationSnapshot *containerUtilizationSnapshot) {
+	set.Containers = append(set.Containers, utilizationSnapshot)
+}
+
 type containerUtilizationSnapshot struct {
 	CreateTime     time.Time `json:"createTime"`
 	ScrapTime      time.Time `json:"scrapTime"`
