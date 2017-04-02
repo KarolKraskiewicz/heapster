@@ -148,11 +148,11 @@ func TestContainerUtilizationSnapshotCreation(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.NotNil(t, snapshot)
-	assert.Equal(t, containerName, snapshot.containerName)
-	assert.Equal(t, containerImage, snapshot.containerImage)
-	assert.Equal(t, podId, snapshot.podId)
-	assert.Equal(t, cpuUsageRate, snapshot.cpuUsageRate)
-	assert.Equal(t, memoryUsage, snapshot.memoryUsage)
+	assert.Equal(t, containerName, snapshot.ContainerName)
+	assert.Equal(t, containerImage, snapshot.ContainerImage)
+	assert.Equal(t, podId, snapshot.PodId)
+	assert.Equal(t, cpuUsageRate, snapshot.CpuUsageRate)
+	assert.Equal(t, memoryUsage, snapshot.MemoryUsage)
 }
 
 func TestContainerUtilizationSnapshotCreationError(t *testing.T) {
