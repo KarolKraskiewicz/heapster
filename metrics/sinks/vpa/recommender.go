@@ -22,7 +22,6 @@ import (
 	"k8s.io/heapster/metrics/core"
 	"net/url"
 	"sync"
-	"fmt"
 )
 
 type recommenderSink struct {
