@@ -37,6 +37,7 @@ func CreateRecommenderClient(url string) JSONClient {
 }
 
 func (c *httpJSONClient) SendJSON(object interface{}) ([]byte, error) {
+	glog.Infof("Object to be serialized and sent: %+v", object)
 	data, err := json.Marshal(object)
 	if err != nil {
 		return nil, err
